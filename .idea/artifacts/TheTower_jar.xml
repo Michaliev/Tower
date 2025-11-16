@@ -1,0 +1,12 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="TheTower:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/TheTower_jar</output-path>
+    <root id="archive" name="TheTower.jar">
+      <element id="module-output" name="TheTower" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/net/java/dev/jna/jna/4.5.0/jna-4.5.0.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/commons-io/commons-io/2.15.1/commons-io-2.15.1.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/openpnp/opencv/4.9.0-0/opencv-4.9.0-0.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/javaxt/javaxt-core/2.1.11/javaxt-core-2.1.11.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>
