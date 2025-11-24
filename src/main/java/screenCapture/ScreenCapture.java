@@ -23,23 +23,24 @@ public class ScreenCapture {
         captureGivenAppWindow("BlueStacks App Player");
     }
 
-    public static void captureBlueStack(){
-        captureGivenAppWindow("BlueStacks App Player");
+    public static boolean captureBlueStack() {
+        return captureGivenAppWindow("BlueStacks App Player");
     }
+
     @SneakyThrows
-    public static void captureGivenAppWindow(String appName) {
+    public static boolean captureGivenAppWindow(String appName) {
 //        checkWindowOfName(appName);
         int hWnd = WindowFinder.User32.instance.FindWindowA(null, appName);
         WindowFinder.WindowInfo w = getWindowInfo(hWnd);
 //        WindowFinder.User32.instance.SetForegroundWindow(w.hwnd);
+
         // turned off - if on window keeps geting focus, consider doing it only once on start
         BufferedImage screenCapture = new Robot().createScreenCapture(new Rectangle(w.rect.left, w.rect.top, w.rect.right - w.rect.left, w.rect.bottom - w.rect.top));
         if (resize) screenCapture = resizeImage(screenCapture, resizeRectangle);
 
         saveFile(screenCapture, MAIN);
+        return true;
     }
-
-
 
 
 }

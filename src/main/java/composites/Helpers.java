@@ -15,6 +15,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.file.Path;
 import java.util.Iterator;
 
 import static screenCapture.Helper.resizeImage;
@@ -31,7 +32,6 @@ public class Helpers {
         }
     }
 
-
     public static void waiter(int time) {
         try {
             Thread.sleep(time);
@@ -44,6 +44,15 @@ public class Helpers {
         String path = "src/main/resources/templates/" + name;
         BufferedImage image = readImage(path);
         saveFile(resizeImage(image, new Rectangle(rectangle.width, rectangle.height)), new StringBuilder(path));
+    }
+
+    public static void saveExistingFile(String existingFileName, String newName) {
+        BufferedImage image = readImage(existingFileName);
+        saveFile(image, newName);
+    }
+
+    public static void saveExistingFile(String existingFileName, String newName, Path path) {
+
     }
 
     public static void saveFile(BufferedImage image, StringBuilder path) {
@@ -131,11 +140,24 @@ public class Helpers {
     }
 
     @SneakyThrows
-    public static BufferedImage readImage(String path) {
+    public static BufferedImage readImage(Path path) {
+        return ImageIO.read(new File(path.toString()));
+    }
+
+    @SneakyThrows
+    public static BufferedImage readImage(String fileName) {
+        return readImage(fileName, ".png");
+    }
+
+    @SneakyThrows
+    public static BufferedImage readImage(String fileName, String extension) {
+        if (!extension.contains("."))
+            extension = "." + extension;
+        String path = PICTURES_PATH + fileName + extension;
         return ImageIO.read(new File(path));
     }
 
     public static BufferedImage readMain() {
-        return readImage(PICTURES_PATH + "main.png");
+        return readImage("main");
     }
 }
