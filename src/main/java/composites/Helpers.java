@@ -16,6 +16,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Iterator;
 
 import static screenCapture.Helper.resizeImage;
@@ -41,9 +42,9 @@ public class Helpers {
     }
 
     public static void changeSizeOfTemplate(String name, Rectangle rectangle) {
-        String path = "src/main/resources/templates/" + name;
+        Path path = Paths.get("src/main/resources/templates/" + name);
         BufferedImage image = readImage(path);
-        saveFile(resizeImage(image, new Rectangle(rectangle.width, rectangle.height)), new StringBuilder(path));
+        saveFile(resizeImage(image, new Rectangle(rectangle.width, rectangle.height)), path);
     }
 
     public static void saveExistingFile(String existingFileName, String newName) {
@@ -51,11 +52,17 @@ public class Helpers {
         saveFile(image, newName);
     }
 
-    public static void saveExistingFile(String existingFileName, String newName, Path path) {
-
+    public static boolean doesStringContainsLetter(String input) {
+        return !input.chars().allMatch(Character::isDigit);
     }
 
-    public static void saveFile(BufferedImage image, StringBuilder path) {
+    public static void saveExistingFile(String existingFileName, String newName, Path path) {
+        BufferedImage image = readImage(existingFileName);
+        Path finalPath = Paths.get(path.toString() + "/" + newName + ".png");
+        saveFile(image, finalPath);
+    }
+
+    public static void saveFile(BufferedImage image, Path path) {
         File outputfile = new File(path.toString());
         try {
             ImageIO.write(image, "png", outputfile);
@@ -113,6 +120,10 @@ public class Helpers {
 
     public static void createFolder(String path) {
         new File(path).mkdirs();
+    }
+
+    public static void clearPictures() {
+        clearFolder("src/main/resources/pictures");
     }
 
     public static void deletePictures() {

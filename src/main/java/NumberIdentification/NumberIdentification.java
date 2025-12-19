@@ -7,6 +7,9 @@ import net.sourceforge.tess4j.TesseractException;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.RescaleOp;
+import java.util.Arrays;
+import java.util.HashSet;
+
 
 import static composites.Helpers.saveFile;
 import static screenCapture.Helper.resizeImage;
@@ -18,8 +21,7 @@ public class NumberIdentification {
         final ITesseract instance = new Tesseract();
 //        instance.setDatapath("C:\\Program Files\\Tesseract-OCR\\tessdata");
         instance.setDatapath("C:\\Program Files\\Tesseract-OCR\\tessdata_best-main");
-        instance.setVariable("user_defined_dpi", "70");
-        // Source and destination are the same.
+        instance.setVariable("user_defined_dpi", "300");
         instance.setVariable("tessedit_char_whitelist", string);
         String result;
         try {
@@ -36,13 +38,27 @@ public class NumberIdentification {
         }
     }
 
+
+    private static boolean isWhite(Color color) {
+        int whiteLimit = 200;
+        if (color.getGreen() < whiteLimit)
+            return false;
+        if (color.getBlue() < whiteLimit)
+            return false;
+        return color.getRed() >= whiteLimit;
+    }
+
+
     public String getHealthFromImage(BufferedImage image) {
         final ITesseract instance = new Tesseract();
-//        instance.setDatapath("C:\\Program Files\\Tesseract-OCR\\tessdata");
-        instance.setDatapath("C:\\Program Files\\Tesseract-OCR\\tessdata_best-main");
-        instance.setVariable("user_defined_dpi", "70");
-        // Source and destination are the same.
+        instance.setDatapath("C:\\Program Files\\Tesseract-OCR\\tessdata");
+//        instance.setDatapath("C:\\Program Files\\Tesseract-OCR\\tessdata_best-main");
+        instance.setVariable("user_defined_dpi", "300");
         instance.setVariable("tessedit_char_whitelist", "0123456789/.KMB");
+//        image=changeColorOfGivenPixel(image,);
+        image = resizeImage(image, 3);
+        changeColorOfNonWhitePixels(image);
+        saveFile(image, "changedImage");
         String result;
         try {
             result = instance.doOCR(image);
@@ -71,12 +87,27 @@ public class NumberIdentification {
             }
     }
 
-    public static void changeColorOfAnyOtherPixel(BufferedImage elementImage, Color elementColor, Color replacement) {
+    public static void changeColorOfNonWhitePixels(BufferedImage elementImage) {
         for (int j = 0; j < elementImage.getWidth(); j++)
             for (int k = 0; k < elementImage.getHeight(); k++) {
-                if (elementImage.getRGB(j, k) != elementColor.getRGB()) {
+                if (!isWhite(new Color(elementImage.getRGB(j, k)))) {
+                    elementImage.setRGB(j, k, Color.BLACK.getRGB());
+                }
+            }
+    }
+
+    public static void changeColorOfAnyOtherPixel(BufferedImage elementImage, HashSet<Color> keepColors, Color replacement) {
+        for (int j = 0; j < elementImage.getWidth(); j++)
+            for (int k = 0; k < elementImage.getHeight(); k++) {
+                if (!keepColors.contains(new Color(elementImage.getRGB(j, k)))) {
                     elementImage.setRGB(j, k, replacement.getRGB());
                 }
             }
+    }
+
+    public static void changeColorOfAnyOtherPixel(BufferedImage elementImage, Color elementColor, Color replacement) {
+        HashSet<Color> set = new HashSet<>();
+        set.add(elementColor);
+        changeColorOfAnyOtherPixel(elementImage, set, replacement);
     }
 }

@@ -1,14 +1,12 @@
 package screenCapture;
 
-import NumberIdentification.NumberIdentification;
 import composites.Helpers;
 import NumberIdentification.Health;
 
 import java.awt.*;
-import java.awt.image.BufferedImage;
 
 import static composites.Helpers.*;
-import static screenCapture.ScreenCapture.captureBlueStack;
+import static screenCapture.ScreenCapture.*;
 
 public class Logic {
     Health health = new Health();
@@ -19,8 +17,10 @@ public class Logic {
     Point offset2 = new Point(1325, 0);
 
     public Logic() {
-        this.ui = new UI();
+        this.ui = new UI(health);
     }
+
+    int turn = -1;
 
     public void mainLoop() {
         captureBlueStack();
@@ -29,11 +29,16 @@ public class Logic {
             collectDiamond();
         }
         if (ui.getCurrentState().equals(State.RUNNING)) {
-            if (analyzer.isHealthLost()) {
-                System.out.println("Lost health");
-                String newName = "lostHealth " + health.getCurrentHealth()+"max " + health.getMaxHealth();
+            if (++turn > 0) {
+                saveExistingFile(MAIN, String.valueOf(turn), archivePath);
+                if (turn >= 200)
+                    turn = 0;
+            }
+            if (analyzer.isHealthLost(ui)) {
+                System.out.println("Lost health at " + turn);
+                String newName = "lostHealth " + health.getCurrentHealth() + "max " + health.getMaxHealth();
                 saveExistingFile("healthBar", newName);
-                ui.setState(State.PAUSE);
+                ui.setState(State.PAUSED);
                 pauseGame();
             }
         }

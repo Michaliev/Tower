@@ -57,7 +57,7 @@ public class Helper {
 
     public static BufferedImage resizeImage(BufferedImage originalImage, int multiplier) {
         Rectangle rectangle = new Rectangle(originalImage.getWidth() * multiplier, originalImage.getHeight() * multiplier);
-        return resizeImage(originalImage, rectangle, true);
+        return resizeImage(originalImage, rectangle, false);
     }
     public static BufferedImage resizeImage(String imagePath, Rectangle targetRectangle) {
         return resizeImage(readImage(imagePath), targetRectangle);

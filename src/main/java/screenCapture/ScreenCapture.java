@@ -6,7 +6,10 @@ import lombok.SneakyThrows;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
+import static composites.Helpers.saveExistingFile;
 import static composites.Helpers.saveFile;
 import static screenCapture.Helper.resizeImage;
 import static screenCapture.WindowFinder.getWindowInfo;
@@ -14,8 +17,11 @@ import static screenCapture.WindowFinder.getWindowInfo;
 @Getter
 @Setter
 public class ScreenCapture {
+
     private static boolean resize = false;
     public static String writePath = "src/main/resources/pictures/";
+    public static String archivePathString = writePath + "archive";
+    static Path archivePath = Paths.get(archivePathString);
     public static String MAIN = "main";
     public static Rectangle resizeRectangle = new Rectangle(1920, 1080);
 
@@ -26,6 +32,8 @@ public class ScreenCapture {
     public static boolean captureBlueStack() {
         return captureGivenAppWindow("BlueStacks App Player");
     }
+
+    static int turn = 0;
 
     @SneakyThrows
     public static boolean captureGivenAppWindow(String appName) {

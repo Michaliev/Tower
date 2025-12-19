@@ -10,8 +10,7 @@ import java.util.HashSet;
 
 import NumberIdentification.Health;
 
-import static composites.Helpers.readMain;
-import static composites.Helpers.saveFile;
+import static composites.Helpers.*;
 
 public class ScreenAnalyzer {
     Helpers helpers = new Helpers();
@@ -46,13 +45,17 @@ public class ScreenAnalyzer {
     }
 
 
-    public boolean isHealthLost() {
+    public boolean isHealthLost(UI ui) {
         BufferedImage healthBar = getHealthBarImage(readMain());
+//        BufferedImage healthBar = readImage("healthBar"); for debug only
         String healthString = new NumberIdentification().getHealthFromImage(healthBar);
         health.updateHealth(healthString);
         health.printHealth();
-        return health.getCurrentHealth() < health.getMaxHealth();
-
+        double percantageMult = ((double) ui.getHeathPausePercentValue() / 100);
+        int maxHealth = ui.isPackageThreshold() ? health.getThresholdPackageHealth() : health.getMaxHealth();
+        int thresholdHealth = (int) (percantageMult * maxHealth);
+        ui.setHealthText("Will pause at " + thresholdHealth + " health ");
+        return health.getCurrentHealth() < thresholdHealth;
     }
 
     public boolean isDiamondInArea() {

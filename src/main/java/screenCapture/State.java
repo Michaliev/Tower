@@ -3,7 +3,7 @@ package screenCapture;
 public enum State {
     START,
     RUNNING,
-    PAUSE,
+    PAUSED,
     HEALTH_LOST,
     QUIT;
 }
